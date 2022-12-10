@@ -7,10 +7,17 @@ st.title('streamlit 超入門')
 
 st.write('Interactive Widgets')
 
-condition = st.sidebar.slider(
-  'あなたの調子は？', 0, 100, 50
-)
-'あなたのコンディションは　', condition, 'です。'
+# st.beta_columns(2)だとエラーになる
+left_column, right_column = st.columns(2)
+button = left_column.button('右カラムに文字を表示')
+if button:
+    right_column.write('右カラムです！')
+
+
+# condition = st.slider(
+#   'あなたの調子は？', 0, 100, 50
+# )
+# 'あなたのコンディションは　', condition, 'です。'
 
 # if st.checkbox('Show Image'):
 #     img = Image.open('mulsol.JPG')
