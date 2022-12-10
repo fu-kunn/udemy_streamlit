@@ -7,12 +7,10 @@ st.title('streamlit 超入門')
 
 st.write('Interactive Widgets')
 
-option = st.text_input(
-    'あなたが好きな数字を教えてください'
+condition = st.slider(
+  'あなたの調子は？', 0, 100, 50
 )
-
-'あなたが好きな数字は', option, 'です。'
-
+'あなたのコンディションは　', condition, 'です。'
 
 # if st.checkbox('Show Image'):
 #     img = Image.open('mulsol.JPG')
