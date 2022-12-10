@@ -7,7 +7,7 @@ st.title('streamlit 超入門')
 
 st.write('Interactive Widgets')
 
-condition = st.slider(
+condition = st.sidebar.slider(
   'あなたの調子は？', 0, 100, 50
 )
 'あなたのコンディションは　', condition, 'です。'
