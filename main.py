@@ -5,11 +5,10 @@ from PIL import Image
 
 st.title('streamlit 超入門')
 
-st.write('DisplayImage')
+st.write('Interactive Widgets')
 
-option = st.selectbox(
-    'あなたが好きな数字を教えてください',
-    list(range(1, 11))
+option = st.text_input(
+    'あなたが好きな数字を教えてください'
 )
 
 'あなたが好きな数字は', option, 'です。'
