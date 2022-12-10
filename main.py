@@ -7,8 +7,9 @@ st.title('streamlit 超入門')
 
 st.write('DisplayImage')
 
-img = Image.open('mulsol.JPG')
-st.image(img, caption='MulSol', use_column_width=True)
+if st.checkbox('Show Image'):
+    img = Image.open('mulsol.JPG')
+    st.image(img, caption='MulSol', use_column_width=True)
 
 _="""
 streamlitでの複数行コメントの方法
