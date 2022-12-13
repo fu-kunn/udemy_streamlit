@@ -2,10 +2,12 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 from PIL import Image
+import time
 
 st.title('streamlit 超入門')
 
-st.write('Interactive Widgets')
+st.write('プログレスバーの表示')
+'Start!!'
 
 # st.beta_columns(2)だとエラーになる
 left_column, right_column = st.columns(2)
@@ -13,6 +15,9 @@ button = left_column.button('右カラムに文字を表示')
 if button:
     right_column.write('右カラムです！')
 
+for i in range(1, 4):
+  expander = st.expander('問い合わせ' + str(i))
+  expander.write('問い合わせ' + str(i) + 'の回答')
 
 # condition = st.slider(
 #   'あなたの調子は？', 0, 100, 50
