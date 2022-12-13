@@ -9,6 +9,16 @@ st.title('streamlit 超入門')
 st.write('プログレスバーの表示')
 'Start!!'
 
+latest_itreation = st.empty()
+bar = st.progress(0)
+
+for i in range(100):
+    latest_itreation.text(f'Iteration {i+1}')
+    bar.progress(i+1)
+    time.sleep(0.1)
+
+'Done!!!!'
+
 # st.beta_columns(2)だとエラーになる
 left_column, right_column = st.columns(2)
 button = left_column.button('右カラムに文字を表示')
