@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import yfinance as yf
 import altair as alt
 
@@ -11,6 +11,13 @@ import altair as alt
 # hist = aapl.history(period=f'{days}d')
 # hist_muzi = muzi.history(period=f'{days}d')
 # print(pd.concat([hist, hist_muzi], axis=1).head())
+
+st.title('株価可視化アプリ')
+
+st.sidebar.write("""
+# 株価
+こちらは株価可視化ツールです。以下のオプションから表示日数をして下さい。
+""")
 
 days = 20
 # FB→METAに変更
@@ -46,17 +53,18 @@ data = pd.melt(data, id_vars=['Date']).rename(
   columns={'value': 'Stock Prices'}
 )
 
+ymin, ymax = 120, 160
 chart = (
   alt.Chart(data)
-  .mark_line(opacity=0.8)
+  .mark_line(opacity=0.8, clip=True)
   .encode(
     x="Date:T",
-    y=alt.Y("Stock Prices:Q", stack=None),
+    y=alt.Y("Stock Prices:Q", stack=None, scale=alt.Scale(domain=[ymin, ymax])),
     color='Name:N'
   )
 )
-# st.altair_chart(chart, use_container_width=True)
-st.altair_chart(chart)
+st.altair_chart(chart, use_container_width=True)
+# st.altair_chart(chart)
 
 
 
@@ -65,11 +73,12 @@ st.altair_chart(chart)
 _="""
 21-グラフ化
   グラフ化したものを出力できない
-  print(aapl.actions['Stock Splits'].plt)→×
+  print(aapl.actions['Stock Splits'].plot())→×
   actionsは公式ドキュメント参考
 """
 # aapl = yf.Ticker('AAPL')
-# # print(aapl.info)
-# aapl.actions.head()
-# # plt.show(aapl.dividends.plot())
-# aapl.actions['Stock Splits'].plt
+# # aapl.info
+# # aapl.actions.head()
+# # aapl.dividends.plot()
+# # aapl.actions['Stock Splits'].plot()
+# st.altair_chart(aapl.actions['Stock Splits'].plot())
