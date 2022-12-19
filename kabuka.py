@@ -11,9 +11,15 @@ import altair as alt
 # hist = aapl.history(period=f'{days}d')
 # hist_muzi = muzi.history(period=f'{days}d')
 # print(pd.concat([hist, hist_muzi], axis=1).head())
+days = 20
 
 # タイトル
 st.title('株価可視化アプリ')
+
+# メインフォーム
+st.write(f"""
+### 過去 **{days}日間** の株価 
+""")
 
 # サイドバー
 st.sidebar.write("""
@@ -35,24 +41,8 @@ ymin, ymax = st.sidebar.slider(
     0.0, 3500.0, (0.0, 3500.0)
 )
 
-# メインフォーム
-st.write(f"""
-### 過去 **{days}日間** の株価 
-""")
 
 
-
-# days = 20
-# FB→METAに変更
-tickers = {
-    'facebook': 'META',
-    'apple': 'AAPL',
-    'google': 'GOOGL',
-    'microsoft': 'MSFT',
-    'muzirushi': '7453.T'
-}
-
-df = get_data(days, tickers)
 
 _="""
 @st.cache→キャッシュを溜め込むことができて、処理を高速化できる
@@ -72,6 +62,28 @@ def get_data(days, tickers):
         hist.index.name = 'Name'
         df = pd.concat([df, hist])
     return df
+
+
+# FB→METAに変更
+tickers = {
+    'facebook': 'META',
+    'apple': 'AAPL',
+    'google': 'GOOGL',
+    'microsoft': 'MSFT',
+    'muzirushi': '7453.T'
+}
+
+df = get_data(days, tickers)
+companies = st.multiselect(
+    '会社名を選択して下さい。',
+    list(df.index),
+    ['facebook', 'google', 'muzirushi', 'apple']
+)
+
+if not companies:
+    st.error('少なくとも一社は選択して下さい。')
+
+
 
 _="""
 locは行名と列名で位置を指定、ilocは行番号と列番号で位置を指定
