@@ -82,7 +82,24 @@ companies = st.multiselect(
 
 if not companies:
     st.error('少なくとも一社は選択して下さい。')
-
+else:
+    data = df.loc[companies]
+    st.write("### 株価", data.sort_index())
+    data = data.T.reset_index()
+    data = data.head()
+    data = pd.melt(data, id_vars=['Date']).rename(
+        columns={'value': 'Stock Prices'}
+    )
+    chart = (
+        alt.Chart(data)
+        .mark_line(opacity=0.8, clip=True)
+        .encode(
+            x="Date:T",
+            y=alt.Y("Stock Prices:Q", stack=None, scale=alt.Scale(domain=[ymin, ymax])),
+            color='Name:N'
+        )
+    )
+    st.altair_chart(chart, use_container_width=True)
 
 
 _="""
