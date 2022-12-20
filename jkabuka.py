@@ -28,4 +28,8 @@ for company in tickers.keys():
 
 companies = ['rakuten', 'muzirushi']
 data = df.loc[companies]
+data.sort_index()
+data = data.T.reset_index()
+data = pd.melt(data, id_vars=['Date'])
+
 st.write(data)
