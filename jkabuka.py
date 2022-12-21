@@ -3,6 +3,8 @@ import yfinance as yf
 import pandas as pd
 import altair as alt
 
+st.title('株価可視化アプリ')
+
 days = 20
 tickers = {
     'muzirushi': '7453.T',
@@ -30,6 +32,17 @@ companies = ['rakuten', 'muzirushi']
 data = df.loc[companies]
 data.sort_index()
 data = data.T.reset_index()
-data = pd.melt(data, id_vars=['Date'])
-
+data = pd.melt(data, id_vars=['Date']).rename(
+    columns={'value': 'Stock Prices'}
+)
+chart = (
+    alt.Chart(data)
+    .mark_line(opacity=0.8)
+    .encode(
+        x="Date:T",
+        y=alt.Y("Stock Prices:Q", stack=None),
+        color='Name:N'
+    )
+)
 st.write(data)
+st.altair_chart(chart, use_container_width=True)
