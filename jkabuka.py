@@ -63,6 +63,7 @@ try:
     else:
         # 縦横グラフ
         data = df.loc[companies]
+        st.write(data)
         st.write('### 株価', data.sort_index())
         data = data.T.reset_index()
         data = pd.melt(data, id_vars=['Date']).rename(
