@@ -1,7 +1,7 @@
-import streamlit as st
 import yfinance as yf
 import pandas as pd
 import altair as alt
+import streamlit as st
 
 st.title('株価可視化アプリ')
 
@@ -22,7 +22,7 @@ st.write(f"""
 
 
 tickers = {
-    '無印良品': '7453.T',
+    '良品計画': '7453.T',
     '楽天': '4755.T',
     'サンドラック': '9989.T',
     'トヨタ自動車': '7203.T',
@@ -48,25 +48,27 @@ try:
     """)
 
     ymin, ymax = st.sidebar.slider(
-      '範囲を指定して下さい', 0.0, 4000.0, (0.0, 4000.0)
+      '範囲を指定して下さい', 0, 4000, (0, 4000)
     )
 
     df = get_data(days, tickers)
     companies = st.multiselect(
         '会社名を選択して下さい。',
         list(df.index),
-        ['楽天', '無印良品']
+        ['楽天', '良品計画']
     )
 
     if not companies:
         st.error('少なくとも一社は選択して下さい。')
     else:
+        # 縦横グラフ
         data = df.loc[companies]
         st.write('### 株価', data.sort_index())
         data = data.T.reset_index()
         data = pd.melt(data, id_vars=['Date']).rename(
             columns={'value': 'Stock Prices'}
         )
+        # 折れ線グラフ
         chart = (
             alt.Chart(data)
             .mark_line(opacity=0.8)
