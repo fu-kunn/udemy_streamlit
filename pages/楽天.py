@@ -16,10 +16,15 @@ ticker = ['4755.T']
 st.write("""
     # 詳細ページ
 """)
-st.write(
-    list(tickers.keys())[0],
-    'リアルタイムの株価を表示'
-)
+
+col1, col2 = st.columns(2)
+
+with col1:
+    st.subheader(list(tickers.keys())[0])
+
+with col2:
+    st.subheader('col2')
+
 
 
 days = 20
