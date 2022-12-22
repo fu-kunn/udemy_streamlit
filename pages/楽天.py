@@ -44,6 +44,8 @@ if df.empty:
     # st.write(hist)
     # hist = hist.max(hist.index)
     hists = hist.loc[max(hist.index)]
+    hists = hists.loc['Close']
+    hists = hists.astype(str)
     st.write(hists)
     # st.write(hist[['Close']].hists)
     # st.write(hist[['Close']].days)
