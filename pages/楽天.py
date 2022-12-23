@@ -29,7 +29,6 @@ st.write("""
 """)
 
 col1, col2 = st.columns(2)
-
 with col1:
     st.subheader(list(tickers.keys())[0])
 
@@ -40,7 +39,8 @@ with col2:
         hists = hist.loc[max(hist.index)]
         hists = hists.loc['Close']
         hists = hists.astype(str)
-        st.subheader('株価： '+hists+'円')
+        st.metric(label='株価', value=f'{hists} 円', delta=f'{hists} 円')
+        # st.subheader('株価： '+hists+'円')
         
         days = days.strftime('%Y-%m-%d')
         st.write(days+' 15:00')
