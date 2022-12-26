@@ -14,41 +14,86 @@ tickers = {
 ticker = ['4755.T']
 
 days = 90
+# 修正必要　前の日に株式市場が閉まっているとデータが取ってこれない
+yesterday = days - 2
+
 tkr = yf.Ticker('4755.T')
 hist = tkr.history(period=f'{days}d')
 
 
 # 取引時間外だとエラー？？
 start = dt.today()
-end = dt.today()+datetime.timedelta(days=1)
-df = yf.download(ticker, start, end, interval="1m")["Close"] #intervalで1分を指定
-# st.write(df.tail())
+end = dt.today()+datetime.timedelta(days=-1)
+# df = yf.download(ticker, start, end, interval='1m')['Close'] #intervalで1分を指定
+df = yf.download(ticker, end, interval='1m')['Close']
+# df = yf.download(ticker, end)['Close']
+# st.write(df)
+# st.write(df.loc[max(df.index)])
+# 現在時刻 14:15→14
+hour = df.index.max().hour
 
 st.write("""
     # 詳細ページ
 """)
 
+_="""
+銘柄名
+株価
+"""
 col1, col2 = st.columns(2)
 with col1:
     st.subheader(list(tickers.keys())[0])
 
 with col2:
-    if df.empty:
+    _="""
+    取得したデータが15時を含む以降であるとき
+     15時を表示
+     その日の終値を株価に表示
+    """
+    if hour >= 15:
         days = pd.to_datetime(hist.index)
         days = max(days)
         hists = hist.loc[max(hist.index)]
+        delta = hist.iloc[yesterday]
+        # st.write(delta)
+        delta = delta.loc['Close']
+        # st.write(delta)
         hists = hists.loc['Close']
+        delta = hists - delta
+
         hists = hists.astype(str)
-        st.metric(label='株価', value=f'{hists} 円', delta=f'{hists} 円')
+        st.metric(label='株価', value=f'{hists} 円', delta=f'{delta} 円')
         # st.subheader('株価： '+hists+'円')
         
         days = days.strftime('%Y-%m-%d')
         st.write(days+' 15:00')
         # その日の終値　15時
     else:
+        hists = hist.loc[max(hist.index)]
+        delta = hist.iloc[yesterday]
+        # st.write(delta)
+        delta = delta.loc['Close']
+        # st.write(delta)
+        hists = hists.loc['Close']
+        delta = hists - delta
         # st.write(df.tail())
-        st.write('aaaaaaaaaaaaaaaa')
+        # st.write('aaaaaaaaaaaaaaaa')
+        hists = df.loc[max(df.index)]
+        st.write(df.index.max())
+        st.metric(label='株価', value=f'{hists} 円', delta=f'{delta} 円')
         # リアルタイムの株価と時間を表示する
+
+_="""
+これから追加予定
+Open その日の始値
+High その日の最高値
+Low その日の最安値
+Closeその日の終値
+Volume その日の取引量
+Dividends 配当金
+Stock Splits 株式分割数
+"""
+
 
 
 
@@ -96,7 +141,7 @@ chart = (
     .encode(
         x="Date:T",
         # y=alt.Y("Stock Prices:Q", stack=None, scale=alt.Scale(domain=[ymin, ymax])),
-        y=alt.Y("Stock Prices:Q", stack=None, scale=alt.Scale(domain=[200, 1400])),
+        y=alt.Y("Stock Prices:Q", stack=None, scale=alt.Scale(domain=[400, 1200])),
         color='Name:N'
     )
 )
