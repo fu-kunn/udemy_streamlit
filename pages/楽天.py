@@ -24,15 +24,10 @@ TITLE = news["title"]
 URL = news["link"]
 
 hist = tkr.history(period=f'{days}d')
-
-# 取引時間外だとエラー？？
 start = dt.today()
 end = dt.today()+datetime.timedelta(days=-1)
 # df = yf.download(ticker, start, end, interval='1m')['Close'] #intervalで1分を指定
 df = yf.download(ticker, end, interval='1m')['Close']
-# df = yf.download(ticker, end)['Close']
-# st.write(df)
-# st.write(df.loc[max(df.index)])
 
 # 現在時刻 14:15→14
 hour = df.index.max().hour
@@ -60,20 +55,13 @@ with col2:
         days = max(days)
         hists = hist.loc[max(hist.index)]
         delta = hist.iloc[yesterday]
-        # st.write(delta)
         delta = delta.loc['Close']
-        # st.write(delta)
         hists = hists.loc['Close']
         delta = hists - delta
-
         hists = hists.astype(str)
-
         days = days.strftime('%Y-%m-%d')
         st.subheader(days+' 15:00')
-
         st.metric(label='株価', value=f'{hists} 円', delta=f'{delta} 円')
-        # st.subheader('株価： '+hists+'円')
-        
     else:
         # 同じ内容を↑にも書いているためまとめる
         hists = hist.loc[max(hist.index)]
@@ -86,26 +74,11 @@ with col2:
         st.subheader(df.index.max())
         st.metric(label='株価', value=f'{hists} 円', delta=f'{delta} 円')
 
-_="""
-これから追加予定
-Open その日の始値
-High その日の最高値
-Low その日の最安値
-Closeその日の終値
-Volume その日の取引量
-Dividends 配当金
-Stock Splits 株式分割数
-"""
-
-
-
-
 # 折れ線グラフ
 st.write("""
     #### 株価チャート
 """)
 volume = hist[['Volume']]
-# st.write(volume)
 volume.columns = ['楽天グループ']
 volume = volume.T
 volume.index.name = 'Name'
@@ -129,7 +102,6 @@ bar_chart = (
     )
 )
 st.altair_chart(bar_chart, use_container_width=True)
-
 
 hist = hist[['Close']]
 hist.columns = ['楽天グループ']
@@ -155,10 +127,6 @@ chart = (
     )
 )
 st.altair_chart(chart, use_container_width=True)
-
-# pd.concat([chart, bar_chart], axis=0)
-# st.write(data['Date'])
-
 
 # 最新ニュース
 st.write("""
