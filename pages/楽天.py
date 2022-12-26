@@ -62,24 +62,22 @@ with col2:
         delta = hists - delta
 
         hists = hists.astype(str)
+
+        days = days.strftime('%Y-%m-%d')
+        st.subheader(days+' 15:00')
+
         st.metric(label='株価', value=f'{hists} 円', delta=f'{delta} 円')
         # st.subheader('株価： '+hists+'円')
         
-        days = days.strftime('%Y-%m-%d')
-        st.write(days+' 15:00')
-        # その日の終値　15時
     else:
+        # 同じ内容を↑にも書いているためまとめる
         hists = hist.loc[max(hist.index)]
         delta = hist.iloc[yesterday]
-        # st.write(delta)
         delta = delta.loc['Close']
-        # st.write(delta)
         hists = hists.loc['Close']
         delta = hists - delta
-        # st.write(df.tail())
-        # st.write('aaaaaaaaaaaaaaaa')
         hists = df.loc[max(df.index)]
-        st.write(df.index.max())
+        st.subheader(df.index.max())
         st.metric(label='株価', value=f'{hists} 円', delta=f'{delta} 円')
         # リアルタイムの株価と時間を表示する
 
@@ -133,7 +131,9 @@ df = pd.concat([df, hist])
 data = hist
 data = data.T.reset_index()
 data = pd.melt(data, id_vars=['Date']).rename(
-    columns={'value': 'Stock Prices'}
+    columns={
+        'value': '株価'
+    }
 )
 chart = (
     alt.Chart(data)
@@ -141,7 +141,7 @@ chart = (
     .encode(
         x="Date:T",
         # y=alt.Y("Stock Prices:Q", stack=None, scale=alt.Scale(domain=[ymin, ymax])),
-        y=alt.Y("Stock Prices:Q", stack=None, scale=alt.Scale(domain=[400, 1200])),
+        y=alt.Y("株価:Q", stack=None, scale=alt.Scale(domain=[400, 1200])),
         color='Name:N'
     )
 )
