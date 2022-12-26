@@ -18,8 +18,12 @@ days = 90
 yesterday = days - 2
 
 tkr = yf.Ticker('4755.T')
-hist = tkr.history(period=f'{days}d')
+# 最新のニュース
+news = tkr.news[0]
+TITLE = news["title"]
+URL = news["link"]
 
+hist = tkr.history(period=f'{days}d')
 
 # 取引時間外だとエラー？？
 start = dt.today()
@@ -29,6 +33,7 @@ df = yf.download(ticker, end, interval='1m')['Close']
 # df = yf.download(ticker, end)['Close']
 # st.write(df)
 # st.write(df.loc[max(df.index)])
+
 # 現在時刻 14:15→14
 hour = df.index.max().hour
 
@@ -77,9 +82,9 @@ with col2:
         hists = hists.loc['Close']
         delta = hists - delta
         hists = df.loc[max(df.index)]
+        # リアルタイムの株価と時間を表示する
         st.subheader(df.index.max())
         st.metric(label='株価', value=f'{hists} 円', delta=f'{delta} 円')
-        # リアルタイムの株価と時間を表示する
 
 _="""
 これから追加予定
@@ -108,15 +113,18 @@ df = pd.concat([df, volume])
 data = volume
 data = data.T.reset_index()
 data = pd.melt(data, id_vars=['Date']).rename(
-    columns={'value': 'Stock Prices'}
+    columns={
+        'value': '取引量',
+        'Date': '日付'
+    }
 )
 bar_chart = (
     alt.Chart(data)
     .mark_bar()
     .encode(
-        x="Date:T",
+        x="日付:T",
         # y=alt.Y("Stock Prices:Q", stack=None, scale=alt.Scale(domain=[ymin, ymax])),
-        y=alt.Y("Stock Prices:Q"),
+        y=alt.Y("取引量:Q"),
         color='Name:N'
     )
 )
@@ -132,14 +140,15 @@ data = hist
 data = data.T.reset_index()
 data = pd.melt(data, id_vars=['Date']).rename(
     columns={
-        'value': '株価'
+        'value': '株価',
+        'Date': '日付'
     }
 )
 chart = (
     alt.Chart(data)
     .mark_line(opacity=0.8)
     .encode(
-        x="Date:T",
+        x="日付:T",
         # y=alt.Y("Stock Prices:Q", stack=None, scale=alt.Scale(domain=[ymin, ymax])),
         y=alt.Y("株価:Q", stack=None, scale=alt.Scale(domain=[400, 1200])),
         color='Name:N'
@@ -149,6 +158,15 @@ st.altair_chart(chart, use_container_width=True)
 
 # pd.concat([chart, bar_chart], axis=0)
 # st.write(data['Date'])
+
+
+# 最新ニュース
+st.write("""
+    #### 最新ニュース
+""")
+st.write('タイトル:')
+st.write(TITLE)
+st.write(URL)
 
 _="""
 Open その日の始値
